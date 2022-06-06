@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>Users menu</title>
+</head>
+<body>
+<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign off"/>
+</form>
+
+<header th:insert="parts/header :: header"></header>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    ((function ($) {
+        $.fn.checkboxTable = function () {
+            target = this;
+
+            $(target).on('click', 'thead :checkbox', function () {
+                let check = this;
+                $(this).parents('table').find('tbody :checkbox').each(function () {
+                    if ($(check).is(':checked')) {
+                        $(this).prop('checked', true);
+                        $(this).parents('tr').addClass('selected');
+                    } else {
+                        $(this).prop('checked', false);
+                        $(this).parents('tr').removeClass('selected');
+                    }
+                });
+            });
+
+            $(target).on('click', 'tbody :checkbox', function () {
+                let parents = $(this).parents('table');
+                if ($(this).is(':checked')) {
+                    $(this).parents('tr').addClass('selected');
+                    $(parents).find('thead :checkbox').prop('checked', true);
+                } else {
+                    $(this).parents('tr').removeClass('selected');
+                    if ($(parents).find('tbody :checkbox:checked').length === 0) {
+                        $(parents).find('thead :checkbox').prop('checked', false);
+                    }
+                }
+            });
+        };
+    })(jQuery));
+</script>
+
+<h2 class="ml-5 mt-2 md-5">Show all Users</h2>
+
+<form th:action="@{/useraction}" name="isCheckedTable">
+
+    <div class="btn-group dropup ml-3 mt-5 md-1">
+        <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu">
+            <button name="delete" value="true" class="button btn btn-dark mt-1 md-1" type="submit">Delete checked
+            </button>
+            <button name="block" value="true" class="button btn btn-dark mt-1 md-1" type="submit">Block checked
+            </button>
+            <button name="unblock" value="true" class="button btn btn-dark mt-1 md-1" type="submit">Unblock checked
+            </button>
+        </div>
+    </div>
+
+    <table class="table table-bordered ml-3">
+        <thead>
+        <tr>
+            <th class="btn-check"><input th:name="allCheckbox" type="checkbox"></th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registration</th>
+            <th>Last Login</th>
+            <th>Active</th>
+        </tr>
+        </thead>
+        <tbody>
+        <div th:each="us:${allusers}">
+            <tr>
+                <td class="btn-check"><input th:type="checkbox" name="isChecked" th:attr="value =${us.id}"></td>
+                <td><p th:text="${us.id}"></p></td>
+                <td><p th:text="${us.username}"></p></td>
+                <td><p th:text="${us.email}"></p></td>
+                <td><p th:text="${us.registration}"></p></td>
+                <td><p th:text="${us.lastLogin}"></p></td>
+                <td><p th:text="${us.isActive()}"></p></td>
+            </tr>
+        </div>
+        </tbody>
+    </table>
+</form>
+
+<script>
+    $('.table').checkboxTable();
+</script>
+<br>
+
+</body>
+</html>
