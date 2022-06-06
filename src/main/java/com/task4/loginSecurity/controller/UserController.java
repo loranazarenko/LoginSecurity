@@ -36,8 +36,8 @@ public class UserController {
         boolean isFlag = false;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        for (int i = 0; i < usersId.length; i++) {
-            Long id = Long.parseLong(usersId[i]);
+        for (String s : usersId) {
+            Long id = Long.parseLong(s);
             User user = userRepository.findById(id).orElseThrow();
             user.setActive(false);
             userRepository.save(user);
@@ -54,8 +54,8 @@ public class UserController {
     }
 
     public String userDelete(String[] usersId) {
-        for (int i = 0; i < usersId.length; i++) {
-            Long id = Long.parseLong(usersId[i]);
+        for (String s : usersId) {
+            Long id = Long.parseLong(s);
             User user = userRepository.findById(id).orElseThrow();
             userRepository.delete(user);
         }
@@ -63,8 +63,8 @@ public class UserController {
     }
 
     public String userUnblock(String[] usersId) {
-        for (int i = 0; i < usersId.length; i++) {
-            Long id = Long.parseLong(usersId[i]);
+        for (String s : usersId) {
+            Long id = Long.parseLong(s);
             User user = userRepository.findById(id).orElseThrow();
             user.setActive(true);
             userRepository.save(user);
