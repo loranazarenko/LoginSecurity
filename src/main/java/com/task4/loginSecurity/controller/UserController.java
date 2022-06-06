@@ -37,12 +37,10 @@ public class UserController {
         boolean isFlag = false;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        for (String s : usersId) {
-            Long id = Long.parseLong(s);
-            User user = new User();
-            Optional<User> userOptional = userRepository.findById(id);
-            if (userOptional.isPresent()) {
-                user = userOptional.get();
+        for (String index : usersId) {
+            User user = getUser(index);
+            if (user == null) {
+                return "index";
             }
             user.setActive(false);
             userRepository.save(user);
@@ -59,12 +57,10 @@ public class UserController {
     }
 
     public String userDelete(String[] usersId) {
-        for (String s : usersId) {
-            Long id = Long.parseLong(s);
-            User user = new User();
-            Optional<User> userOptional = userRepository.findById(id);
-            if (userOptional.isPresent()) {
-                user = userOptional.get();
+        for (String index : usersId) {
+            User user = getUser(index);
+            if (user == null) {
+                return "index";
             }
             userRepository.delete(user);
         }
@@ -72,17 +68,25 @@ public class UserController {
     }
 
     public String userUnblock(String[] usersId) {
-        for (String s : usersId) {
-            Long id = Long.parseLong(s);
-            User user = new User();
-            Optional<User> userOptional = userRepository.findById(id);
-            if (userOptional.isPresent()) {
-                user = userOptional.get();
+        for (String index : usersId) {
+            User user = getUser(index);
+            if (user == null) {
+                return "index";
             }
             user.setActive(true);
             userRepository.save(user);
         }
         return "redirect:/users";
+    }
+
+    private User getUser(String index) {
+        Long id = Long.parseLong(index);
+        User user = null;
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+        }
+        return user;
     }
 
     @RequestMapping(value = "/useraction", method = RequestMethod.GET)

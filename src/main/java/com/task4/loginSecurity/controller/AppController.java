@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Controller
 public class AppController {
@@ -29,10 +30,11 @@ public class AppController {
 
     @PostMapping("/registration")
     public String addUser(User user) {
-
-        User userFromDb = userRepository.findByUsername(user.getUsername()).stream()
-                .findFirst().orElse(null);
-
+        User userFromDb = null;
+        Optional<User> userOptional = userRepository.findByUsername(user.getUsername());
+        if (userOptional.isPresent()) {
+            userFromDb = userOptional.get();
+        }
         if (userFromDb != null) {
             return "index";
         }
