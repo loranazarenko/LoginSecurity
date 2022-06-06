@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -38,7 +39,11 @@ public class UserController {
 
         for (String s : usersId) {
             Long id = Long.parseLong(s);
-            User user = userRepository.findById(id).orElseThrow();
+            User user = new User();
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()) {
+                user = userOptional.get();
+            }
             user.setActive(false);
             userRepository.save(user);
 
@@ -56,7 +61,11 @@ public class UserController {
     public String userDelete(String[] usersId) {
         for (String s : usersId) {
             Long id = Long.parseLong(s);
-            User user = userRepository.findById(id).orElseThrow();
+            User user = new User();
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()) {
+                user = userOptional.get();
+            }
             userRepository.delete(user);
         }
         return "redirect:/users";
@@ -65,7 +74,11 @@ public class UserController {
     public String userUnblock(String[] usersId) {
         for (String s : usersId) {
             Long id = Long.parseLong(s);
-            User user = userRepository.findById(id).orElseThrow();
+            User user = new User();
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()) {
+                user = userOptional.get();
+            }
             user.setActive(true);
             userRepository.save(user);
         }
